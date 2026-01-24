@@ -141,6 +141,9 @@ function App() {
 
   const repoUrl = "https://github.com/Underworldbros/EVE-UIP-Public";
   const docsUrl = `${repoUrl}/blob/main/docs/DESIGN/README.md`;
+  
+  // Base URL for assets on GitHub Pages
+  const baseUrl = import.meta.env.BASE_URL;
 
   return (
     <div className="min-h-screen flex flex-col font-sans bg-deep-space text-gray-400 relative overflow-hidden">
@@ -167,7 +170,7 @@ function App() {
       </header>
 
       <main className="flex-grow z-10">
-        {/* HERO AREA */}
+        {/* HERO AREA with Circular Orbit */}
         <section className="relative pt-24 pb-12 border-b border-gray-800/50 flex flex-col items-center overflow-hidden">
            <div className="relative w-64 h-64 flex items-center justify-center mb-12">
             <div className="absolute inset-0 border border-eve-emerald/10 rounded-full animate-spin-slow" />
@@ -289,21 +292,29 @@ function App() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="aspect-video bg-[#0c0c0c] border border-gray-800 flex flex-col items-center justify-center relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-grid-tactical opacity-10 pointer-events-none" />
-                  <Lock className="w-8 h-8 text-gray-800 group-hover:text-eve-emerald/20 transition-colors mb-4" />
-                  <div className="text-[10px] font-black tracking-tactical text-gray-700 uppercase">Signal_Locked</div>
-                  <div className="text-[8px] font-mono text-gray-800 mt-2">ENCRYPTED_FEED_{i}</div>
+              {[
+                { title: "Portfolio Overview", file: "Wallet_Overview.png", id: "01" },
+                { title: "Mining Intelligence", file: "Mining_Ledger.png", id: "02" },
+                { title: "Neural Simulation", file: "Implant_Sim.png", id: "03" }
+              ].map((img, i) => (
+                <div key={i} className="aspect-video bg-[#0c0c0c] border border-gray-800 relative overflow-hidden group">
+                  <img 
+                    src={`${baseUrl}${img.file}`} 
+                    alt={img.title}
+                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-deep-space to-transparent opacity-60 pointer-events-none" />
+                  
+                  <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                    <div className="text-[10px] font-black tracking-tactical text-eve-emerald uppercase">{img.title}</div>
+                    <div className="text-[8px] font-mono text-gray-600 mt-1">FEED_STAMP // {img.id}</div>
+                  </div>
                   
                   {/* Decorative corner accents */}
                   <div className="absolute top-2 left-2 w-4 h-4 border-t border-l border-gray-800 group-hover:border-eve-emerald/30 transition-colors" />
                   <div className="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-gray-800 group-hover:border-eve-emerald/30 transition-colors" />
                 </div>
               ))}
-            </div>
-            <div className="mt-8 text-center text-[9px] font-black tracking-[0.4em] text-gray-700 uppercase">
-              // DATA_FEED_PENDING_SYNCHRONIZATION //
             </div>
           </div>
         </section>
