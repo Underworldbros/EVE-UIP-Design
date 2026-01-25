@@ -60,6 +60,22 @@ const TerminalTicker = () => {
 function App() {
   const [selectedImage, setSelectedImage] = useState(null);
 
+  // Dynamic Screenshot Loading
+  const screenshotModules = import.meta.glob('./assets/screenshots/*.{png,jpg,jpeg,webp,svg}', { eager: true });
+  const screenshots = Object.entries(screenshotModules).map(([path, module], index) => {
+    const filename = path.split('/').pop();
+    const title = filename
+      .replace(/\.[^/.]+$/, "") // remove extension
+      .replace(/[_-]/g, " ")     // replace underscores/hyphens with spaces
+      .replace(/\b\w/g, l => l.toUpperCase()); // title case
+      
+    return {
+      title,
+      url: module.default || module,
+      id: String(index + 1).padStart(2, '0')
+    };
+  });
+
   // Definitive Scroll Lockout
   useEffect(() => {
     // 1. Disable browser's internal scroll memory
@@ -157,7 +173,6 @@ function App() {
 
   const repoUrl = "https://github.com/Underworldbros/EVE-UIP-Public";
   const docsUrl = `${repoUrl}/blob/main/docs/DESIGN/README.md`;
-  const baseUrl = import.meta.env.BASE_URL;
 
   return (
     <div className="min-h-screen flex flex-col font-sans bg-deep-space text-gray-400 relative overflow-hidden">
@@ -315,18 +330,14 @@ function App() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                { title: "Portfolio Overview", file: "Wallet_Overview.png", id: "01" },
-                { title: "Mining Intelligence", file: "Mining_Ledger.png", id: "02" },
-                { title: "Neural Simulation", file: "Implant_Sim.png", id: "03" }
-              ].map((img, i) => (
+              {screenshots.map((img, i) => (
                 <div 
                   key={i} 
                   className="aspect-video bg-[#0c0c0c] border border-gray-800 relative overflow-hidden group cursor-pointer"
                   onClick={() => setSelectedImage(img)}
                 >
                   <img 
-                    src={`${baseUrl}${img.file}`} 
+                    src={img.url} 
                     alt={img.title}
                     className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
                   />
@@ -432,7 +443,7 @@ function App() {
             </div>
 
             <img 
-              src={`${baseUrl}${selectedImage.file}`} 
+              src={selectedImage.url} 
               alt={selectedImage.title}
               className="max-w-full max-h-[85vh] object-contain shadow-[0_0_50px_rgba(52,211,153,0.1)] border border-gray-800"
             />
