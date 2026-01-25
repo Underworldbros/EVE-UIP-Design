@@ -212,7 +212,7 @@ function App() {
 
           <div className="text-center max-w-4xl px-4">
             <h1 className="text-4xl md:text-6xl font-black tracking-tactical text-white uppercase mb-4">
-              UNIFIED <span className="text-eve-emerald">STRATEGIC</span> PLATFORM
+              UNIFIED <span className="text-eve-emerald">INTELLIGENCE</span> PLATFORM
             </h1>
             <p className="text-gray-500 text-sm md:text-base font-medium max-w-2xl mx-auto mb-12 tracking-wide uppercase">
               A high-density intelligence engine designed to consolidate Market, Spatial, and Industrial telemetry into a single unified interface.
