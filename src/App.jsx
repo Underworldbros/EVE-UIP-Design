@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Terminal, Shield, Activity, Database, ChevronRight, Zap, Box, Compass, Cpu, Globe2, CircleDollarSign, Map, ShieldCheck, ExternalLink, TrendingUp, Award, Coins, Crosshair, Calendar, Factory, BookOpen, UserSearch, Camera, Lock, X } from 'lucide-react'
 
+import devBlog from '../Dev_Blog.md?raw'
+
 const PHRASES = [
   "SYNCHRONIZING WITH TRANQUILITY CLUSTER...",
   "BYPASSING CONCORD TRAFFIC CONTROL PROTOCOLS...",
@@ -19,6 +21,51 @@ const PHRASES = [
   "LOGISTICS WIN WARS. ISK WINS EVERYTHING ELSE.",
   "EVE INTELLIGENCE: YOUR SECOND BRAIN IN EDEN.",
 ]
+
+const parseDevBlog = (md) => {
+  if (!md) return [];
+  const sections = md.split(/^### /m).slice(1);
+  return sections.map(section => {
+    const lines = section.split('\n');
+    const header = lines[0].trim();
+    
+    const dateMatch = header.match(/\[(.*?)\]/);
+    const chapterMatch = header.match(/Chapter (.*?):/);
+    const titleMatch = header.match(/Chapter .*?: (.*)/);
+
+    const date = dateMatch ? dateMatch[1] : '';
+    const chapterRaw = chapterMatch ? chapterMatch[1] : 'SYNC';
+    const title = titleMatch ? titleMatch[1].trim() : header;
+
+    let body = '';
+    const points = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line || line === '---' || line.toLowerCase().includes('last updated:')) continue;
+      
+      if (line.startsWith('- ')) {
+        // Handle points
+        if (line.startsWith('- **')) {
+          points.push(line.replace(/^- \*\*(.*?)\*\*/, '$1'));
+        } else {
+          points.push(line.replace(/^- /, ''));
+        }
+      } else if (!body && !line.startsWith('#')) {
+        // First non-empty, non-list, non-header line is the body
+        body = line.replace(/^\*|\*$/g, '');
+      }
+    }
+
+    return { 
+      date, 
+      chapter: isNaN(chapterRaw) ? chapterRaw : `CHAPTER_${chapterRaw}`, 
+      title, 
+      body, 
+      points 
+    };
+  });
+};
 
 const TerminalTicker = () => {
   const [index, setIndex] = useState(0)
@@ -154,22 +201,7 @@ function App() {
     }
   ]
 
-  const updates = [
-    {
-      date: "2026-01-24",
-      chapter: "MASTER_SYNC",
-      title: "Consolidated Deployment: Foundation to Synthesis",
-      body: "Strategic summary of platform evolution from initial authorization to current three-tier architecture. This update marks the completion of the foundational intelligence layer.",
-      points: [
-        "Project Genesis: Established core FastAPI/React architecture",
-        "SDE Authority: Integrated local Static Data Export for zero-latency asset resolution",
-        "Financial Module: Deployment of 'Wallet Standard' portfolio analysis",
-        "Industrial Expansion: Bill of Materials solver and blueprint intelligence",
-        "Multi-Character Synthesis: Atomic state syncing and contextual character sovereignty",
-        "Tactical Reorganization: Migration to isolated engine/public/management layers"
-      ]
-    }
-  ]
+  const updates = parseDevBlog(devBlog);
 
   const repoUrl = "https://github.com/Underworldbros/EVE-UIP-Public";
   const docsUrl = `${repoUrl}/blob/main/docs/DESIGN/README.md`;
